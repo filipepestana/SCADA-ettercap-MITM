@@ -243,12 +243,12 @@ static void parse_tcp(struct packet_object *po)
        from a packet dissector to the packet destination.
        [!]Comment lines for TCP
     */
-    //po->L2.dst[0] = 0x94;
-    //po->L2.dst[1] = 0xde;
-    //po->L2.dst[2] = 0x80;
-    //po->L2.dst[3] = 0x29;
-    //po->L2.dst[4] = 0x7a;
-    //po->L2.dst[5] = 0x0d;
+    //po->L2.dst[0] = 0xXX;
+    //po->L2.dst[1] = 0xXX;
+    //po->L2.dst[2] = 0xXX;
+    //po->L2.dst[3] = 0xXX;
+    //po->L2.dst[4] = 0xXX;
+    //po->L2.dst[5] = 0xXX;
 	
     /* Copy information to original structure */
     memcpy(po->DATA.data, apci, sizeof(apci));
