@@ -6,6 +6,8 @@ These ettercap plugins were developed for educational purposes ONLY,  to show ho
 
 ### References:
 
+PMaynard's [104_spoof](https://github.com/PMaynard/ettercap-104-mitm/blob/master/plug-ins/104_spoof/104_spoof.c "Ettercap 104 MITM") used in [Towards Understanding Man-In-The-Middle Attacks on IEC 60870-5-104 SCADA Networks](https://ewic.bcs.org/content/ConWebDoc/53228)
+
 [Ettercap Project](https://github.com/Ettercap/ettercap/ "Ettercap Project"):
 
 * [dummy.c](https://github.com/Ettercap/ettercap/blob/master/plug-ins/dummy/dummy.c "Dummy plugin") plugin
