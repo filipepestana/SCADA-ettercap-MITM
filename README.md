@@ -1,5 +1,5 @@
 # SCADA-ettercap-MITM
-Ettercap plugins for DNP3 and IEC 60870-5-104
+Ettercap plugins for DNP3 and IEC 60870-5-104 communication protocols
 
 ### Disclaimer
 These ettercap plugins were developed for educational purposes ONLY,  to show how packets of the most popular SCADA communication protocols (IEC 104 and DNP3) can be modified. Do not use it without the permission of the SCADA's owner or for malicious purposes.
